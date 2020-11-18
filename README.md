@@ -1,4 +1,4 @@
-![](https://img.shields.io/badge/LoonVer.-2.1.5-blue)   ![](https://img.shields.io/badge/Coding-JavaScript-green) ![](https://img.shields.io/badge/Author-Pwnint32-orange) ![](https://img.shields.io/badge/FirstModify-2020%2F11%2F18-red)
+[](https://img.shields.io/badge/LoonVer.-2.1.5-blue)   ![](https://img.shields.io/badge/Coding-JavaScript-green) ![](https://img.shields.io/badge/Author-Pwnint32-orange) ![](https://img.shields.io/badge/FirstModify-2020%2F11%2F18-red)
 # Loon脚本API手册
 >阅读此文档需要了解基础的JavaScript语法和正则表达式
 如果您有兴趣学习JavaScript的教程可以移步至：[菜鸟教程-JavaScript教程](https://www.runoob.com/js/js-tutorial.html)
