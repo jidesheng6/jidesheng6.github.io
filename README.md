@@ -1,9 +1,10 @@
 ![](https://img.shields.io/badge/LoonVer.-2.1.5-blue.svg)   ![](https://img.shields.io/badge/Coding-JavaScript-green.svg) ![](https://img.shields.io/badge/Author-Pwnint32-orange.svg) ![](https://img.shields.io/badge/FirstModify-2020%2F11%2F18-red.svg)
 # Loon脚本API手册
->阅读此文档需要了解基础的JavaScript语法和正则表达式
+阅读此文档需要了解基础的JavaScript语法和正则表达式
 如果您有兴趣学习JavaScript的教程可以移步至：[菜鸟教程-JavaScript教程](https://www.runoob.com/js/js-tutorial.html)
 如果您有兴趣学习正则表达式的内容可以移步至:[30分钟入门正则表达式](https://deerchao.cn/tutorials/regex/regex.htm)
 本人非Loon作者，在官方文档没有出来之前，本API手册可作为脚本编写的API参考。
+
 截止至编写本篇教程时,Loon版本号为:2.1.5(226),TF版本
 ---
 ## 一、Loon脚本类型
