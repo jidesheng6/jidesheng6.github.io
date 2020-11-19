@@ -1,261 +1,506 @@
-<p><img alt="" src="https://img.shields.io/badge/LoonVer.-2.1.5-blue.svg"/>   <img alt="" src="https://img.shields.io/badge/Coding-JavaScript-green.svg"/> <img alt="" src="https://img.shields.io/badge/Author-Pwnint32-orange.svg"/> <img alt="" src="https://img.shields.io/badge/FirstModify-2020%2F11%2F18-red.svg"/></p>
+<!DOCTYPE html><html><head>
+      <title>Loon&#x811A;&#x672C;&#x7F16;&#x5199;&#x6587;&#x6863;</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="file:///c:\Users\Administrator\.vscode\extensions\shd101wyy.markdown-preview-enhanced-0.5.13\node_modules\@shd101wyy\mume\dependencies\katex\katex.min.css">
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      <style>
+      /**
+ * prism.js Github theme based on GitHub's theme.
+ * @author Sam Clarke
+ */
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #333;
+  background: none;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.4;
 
-<h1>Loon脚本API手册</h1>
+  -moz-tab-size: 8;
+  -o-tab-size: 8;
+  tab-size: 8;
 
-<p>阅读此文档需要了解基础的JavaScript语法和正则表达式</p>
-
-<p>如果您有兴趣学习JavaScript的教程可以移步至：<a href="https://www.runoob.com/js/js-tutorial.html">菜鸟教程-JavaScript教程</a></p>
-
-<p>如果您有兴趣学习正则表达式的内容可以移步至:<a href="https://deerchao.cn/tutorials/regex/regex.htm">30分钟入门正则表达式</a></p>
-
-<p>本人非Loon作者，在官方文档没有出来之前，本API手册可作为脚本编写的API参考。</p>
-
-<h2>截止至编写本篇教程时,Loon版本号为:2.1.5(226),TF版本</h2>
-
-<h2>一、Loon脚本类型</h2>
-
-<pre><code>Loon支持三种脚本类型:http-request,http-response,cron
-
-http-request类型:获取到表达式匹配的URL地址发生请求事件时触发的脚本
-http-response类型:获取到表达式匹配的URL地址完成请求,取得响应消息体时触发的脚本
-cron类型:定时任务脚本,在Loon中有表达式的详细注解,cron可自行百度进行学习</code></pre>
-
-<h2>二、Loon推送通知</h2>
-
-<pre><code>Loon支持通过脚本向用户推送通知信息</code></pre>
-
-<p><code></code>`php
-API名称:$notification
-API方法:post
-API方法参数:Title,SubTitle,Content</p>
-
-<p>Title:通知标题
-SubTitle:子标题
-Content:内容</p>
-
-<p>Tips:SubTitle和Content必须传入的,可以传入空字符串,则只会显示通知标题;SubTitle显示的内容长度有限,如果内容过长,建议写入Content。
-<code></code>`</p>
-
-<p><code>javascript
-API代码示例：
-function Notify_Demo()
-{
-    var Title,SubTitle,Content;
-    TItle = &quot;我是主标题&quot;;
-    SubTitle  = &quot;我是子标题&quot;;
-    Content = &quot;我是要推送的内容&quot;;
-    $noification.post(Title,SubTitle,Content);
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
 }
-//Call Function
-Notify_Demo()
-</code></p>
 
-<h2>三、Loon发送Http请求</h2>
-
-<pre><code>Loon支持发送Http请求,许多签到脚本的实现也是基于此API。</code></pre>
-
-<p><code></code>`php
-API名称：$httpClient
-API方法:get,post
-本API分为两个方法,get方法和post方法,其中get请求支持两种参数格式：</p>
-
-<p>GET请求的API方法参数(第一种)：Url,CallBackFunction(error,response,data)
-GET请求的API方法参数(第二种)：Params,CallBackFunction(error,response,data)</p>
-
-<p>POST请求的API方法参数:Params,CallBackFunction(error,response,data)</p>
-
-<p>Url:请求的URL,字符串类型
-CallBackFunction(error,response,data)：回调函数,用于获取请求回来的消息体,传入三个参数:error,response,data;response:消息头,对象类型;data：消息体,字符串类型;error一般表示错误信息
-Params:请求对象,对象类型,其中包括三个内容：url,headers,body;分别表示请求的URL,请求头信息,需要携带的消息体;headers:对象类型,写入请求所需要的各种头部信息。
-<code>
-**GET请求的两种方式:**
-</code>javascript
-//$httpClient.get(url,callbackfunction(error,response,data));
-function Get_One()//第一种方式
-{
-    var ExampleUrl = &quot;https://example.com&quot;;
-    $httpClient.get(ExampleUrl,function(error,response,data)
-    {
-        var StatusCode,ResponseHeaders;
-        StatusCode = response.status;
-        ResponseHeaders = response.headers;
-        console.log(response);
-        console.log(StatusCode);//400
-        console.log(ResponseHeaders);//Object
-        console.log(error);
-        console.log(data);
-        console.log(Json.parse(data));//if data is Json String
-        //Loon支持使用Console.log输出调试信息
-    })
-}</p>
-
-<p>//$httpClient.get(params,callbackfunction(error,response,data))
-function Get_Two()//第二种方式
-{
-    var GetExampleParams
-    {
-        url:&quot;https://www.baidu.com&quot;,
-        headers:
-        {
-            &quot;User-Agent&quot;:&quot;Example.Agent&quot;,
-             Cookies:&quot;ExampleCookie&quot;,
-             //...
-        },
-        body:&quot;ExampleBodyMessage&quot;
-    }
-    $httpClient.get(GetExampleParams,function(error,response,data)
-    {
-        var StatusCode,ResponseHeaders;
-        StatusCode = response.status;
-        ResponseHeaders = response.headers;
-        console.log(response);
-        console.log(StatusCode);//400
-        console.log(ResponseHeaders);//Object
-        console.log(error);
-        console.log(data);
-        console.log(Json.parse(data));//if data is Json String
-        //Loon支持使用Console.log输出调试信息
-    })
+/* Code blocks */
+pre[class*="language-"] {
+  padding: .8em;
+  overflow: auto;
+  /* border: 1px solid #ddd; */
+  border-radius: 3px;
+  /* background: #fff; */
+  background: #f5f5f5;
 }
-<code></code>`</p>
 
-<p><strong>POST请求</strong>
-<code></code>`javascript
-//$httpClient.post(params,callbackfunction(error,response,data))
-function Post_Data()
-{
-    var GetExampleParams
-    {
-        url:&quot;https://www.baidu.com&quot;,
-        headers:
-        {
-            &quot;User-Agent&quot;:&quot;Example.Agent&quot;,
-             Cookies:&quot;ExampleCookie&quot;,
-             //...
-        },
-        body:&quot;ExampleBodyMessage&quot;
-    }
-    $httpClient.post(GetExampleParams,function(error,response,data)
-    {
-        var StatusCode,ResponseHeaders;
-        StatusCode = response.status;
-        ResponseHeaders = response.headers;
-        console.log(response);
-        console.log(StatusCode);//400
-        console.log(ResponseHeaders);//Object
-        console.log(error);
-        console.log(data);
-        console.log(Json.parse(data));//if data is Json String
-        //Loon支持使用Console.log输出调试信息
-    })
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+  padding: .1em;
+  border-radius: .3em;
+  white-space: normal;
+  background: #f5f5f5;
 }
-}</p>
 
-<p><code></code>`</p>
-
-<h2>三、Http-request类型</h2>
-
-<pre><code>Loon中的http-request类型的脚本,除了支持公共API外,还有自有的变量,不过该变量只有在其被触发时才有效。</code></pre>
-
-<p><code>php
-API名称:$request
-API属性:url,headers....等等
-本API只有在匹配了正则表达式匹配的URL链接才会被触发,直接运行会报错。
-tips:非cron类型脚本,都需要在MITM中添加要解密的域名,否则不会生效;您需要添加正则表达式
-使用$request.url可以获取到请求链接等信息,如果您不知道$request中包含哪些信息
-可以使用console.log($request)输出其完整的信息
-</code></p>
-
-<p><code>javascript
-//获取请求URL和请求头信息
-function Get_RequestInfo()
-{
-    var RequestURL,RequestHeaders;
-    RequestURL = $request.url;
-    RequestHeaders = $request.headers;
-    console.log(RequestURL);
-    console.log(RequestHeaders);
+.token.comment,
+.token.blockquote {
+  color: #969896;
 }
-//修改请求头信息
-function Change_Request()
-{
-    var RequestHeaders = $request.headers;
-    RequestHeaders[&quot;Cookie&quot;] = &quot;ChangeExampleCookie&quot;;
-    $done({RequestHeaders});//修改完成之后需要调用$done
+
+.token.cdata {
+  color: #183691;
 }
-</code></p>
 
-<h2>四、Http-response类型</h2>
-
-<pre><code>Loon中的http-response类型的脚本,除了支持公共API外,还有自有的变量,不过该变量只有在其被触发时才有效。</code></pre>
-
-<p><code>php
-API名称:$response
-API属性:headers....等等
-本API只有在匹配了正则表达式匹配的URL链接才会被触发,直接运行会报错。
-tips:非cron类型脚本,都需要在MITM中添加要解密的域名,否则不会生效;您需要添加正则表达式
-使用$request.url可以获取到请求链接等信息,如果您不知道$response中包含哪些信息
-可以使用console.log($response)输出其完整的信息
-注意：如果要修改消息体的内容,需要打开Body开关
-</code></p>
-
-<p><code>javascript
-//获取响应信息
-function Get_ResponseInfo()
-{
-    var ResponseHeaders;
-    RequestHeaders = $response.headers;
-    console.log(RequestHeaders);
+.token.doctype,
+.token.punctuation,
+.token.variable,
+.token.macro.property {
+  color: #333;
 }
-//修改消息体
-function Change_ResponseBody()
-{
-    var RespnseBodyData = $response.body
-    RespnseBodyData = Json.parse(RespnseBodyData);
-    RespnseBodyData[&quot;ExampleTree&quot;] = &quot;ExampleChangeTree&quot;;
-    $done({RespnseBodyData});//修改完成之后需要调用$done
+
+.token.operator,
+.token.important,
+.token.keyword,
+.token.rule,
+.token.builtin {
+  color: #a71d5d;
 }
-</code></p>
 
-<h2>五、Loon中持续化存储</h2>
-
-<pre><code>我也不知道API的意思是不是这个,姑且这么叫吧。
-在Loon中,提供了一个能在全局存储数据的API,也就是一个脚本在运行的时候,可以读取其他多个脚本运行中存入公共区域的数据。
-本函数在Loon的进程被杀死之前，存储的数据一直会被保留。</code></pre>
-
-<p><code>php
-API名称:$peristentStroe
-方法:write,read,remove
-write:用于写入数据到公共存储区
-read:用于读取在公共存储区已有的数据
-remove:移除公共存储区存储的数据
-</code>
-<code>javascript
-API代码示例：
-function Write_PeristentStore()//写入存储区
-{
-    var WriteString = &quot;WriteExample&quot;;
-    $peristentStore.write(WriteString,&quot;ExampleKey&quot;);//参数分别代表:写入的数据,数据存储的Key名称，用于取出数据
+.token.string,
+.token.url,
+.token.regex,
+.token.attr-value {
+  color: #183691;
 }
-function Read_PeristentStore()//读取写入的数据
-{
-    var ReadKey = &quot;ExampleKey&quot;;//上一个API写入数据的KEY名称
-    var ReadResult = $peristentStore.read(ReadKey);
-    console.log(ReadResult);//输出数据
+
+.token.property,
+.token.number,
+.token.boolean,
+.token.entity,
+.token.atrule,
+.token.constant,
+.token.symbol,
+.token.command,
+.token.code {
+  color: #0086b3;
 }
-//Remove方法我就不写例子了,和read相同
-</code>
-    本API多被用于需要获取Cookie的脚本进行Cookie获取写入持续存储区,再供签到脚本读取Cookie来运行。</p>
 
-<h2>六、结束</h2>
+.token.tag,
+.token.selector,
+.token.prolog {
+  color: #63a35c;
+}
 
-<pre><code>其实文档还没有结束,目前官方正式的文档还没有出来,希望我的文档能够帮助到大家。
+.token.function,
+.token.namespace,
+.token.pseudo-element,
+.token.class,
+.token.class-name,
+.token.pseudo-class,
+.token.id,
+.token.url-reference .token.variable,
+.token.attr-name {
+  color: #795da3;
+}
 
-Tips:Loon中所有的内建函数,如$httpClient等,都可以使用console.log($functionName)来查看它的方法和属性。
+.token.entity {
+  cursor: help;
+}
 
-一个小贴士:$loon也是属于一个内建函数,可以使用本函数输出loon版本,也可以通过这个来判断脚本是否再loon中运行。
+.token.title,
+.token.title .token.punctuation {
+  font-weight: bold;
+  color: #1d3e81;
+}
 
-loon的config部分我就不讲了，没有深入了解过，只了解了以上提到的内容。
+.token.list {
+  color: #ed6a43;
+}
+
+.token.inserted {
+  background-color: #eaffea;
+  color: #55a532;
+}
+
+.token.deleted {
+  background-color: #ffecec;
+  color: #bd2c00;
+}
+
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+
+/* JSON */
+.language-json .token.property {
+  color: #183691;
+}
+
+.language-markup .token.tag .token.punctuation {
+  color: #333;
+}
+
+/* CSS */
+code.language-css,
+.language-css .token.function {
+  color: #0086b3;
+}
+
+/* YAML */
+.language-yaml .token.atrule {
+  color: #63a35c;
+}
+
+code.language-yaml {
+  color: #183691;
+}
+
+/* Ruby */
+.language-ruby .token.function {
+  color: #333;
+}
+
+/* Markdown */
+.language-markdown .token.url {
+  color: #795da3;
+}
+
+/* Makefile */
+.language-makefile .token.symbol {
+  color: #795da3;
+}
+
+.language-makefile .token.variable {
+  color: #183691;
+}
+
+.language-makefile .token.builtin {
+  color: #0086b3;
+}
+
+/* Bash */
+.language-bash .token.keyword {
+  color: #0086b3;
+}
+
+/* highlight */
+pre[data-line] {
+  position: relative;
+  padding: 1em 0 1em 3em;
+}
+pre[data-line] .line-highlight-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: transparent;
+  display: block;
+  width: 100%;
+}
+
+pre[data-line] .line-highlight {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: inherit 0;
+  margin-top: 1em;
+  background: hsla(24, 20%, 50%,.08);
+  background: linear-gradient(to right, hsla(24, 20%, 50%,.1) 70%, hsla(24, 20%, 50%,0));
+  pointer-events: none;
+  line-height: inherit;
+  white-space: pre;
+}
+
+pre[data-line] .line-highlight:before, 
+pre[data-line] .line-highlight[data-end]:after {
+  content: attr(data-start);
+  position: absolute;
+  top: .4em;
+  left: .6em;
+  min-width: 1em;
+  padding: 0 .5em;
+  background-color: hsla(24, 20%, 50%,.4);
+  color: hsl(24, 20%, 95%);
+  font: bold 65%/1.5 sans-serif;
+  text-align: center;
+  vertical-align: .3em;
+  border-radius: 999px;
+  text-shadow: none;
+  box-shadow: 0 1px white;
+}
+
+pre[data-line] .line-highlight[data-end]:after {
+  content: attr(data-end);
+  top: auto;
+  bottom: .4em;
+}html body{font-family:"Helvetica Neue",Helvetica,"Segoe UI",Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ul,html body>ol{margin-bottom:16px}html body ul,html body ol{padding-left:2em}html body ul.no-list,html body ol.no-list{padding:0;list-style-type:none}html body ul ul,html body ul ol,html body ol ol,html body ol ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;background-color:#f0f0f0;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:bold;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:bold}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em !important;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::before,html body code::after{letter-spacing:-0.2em;content:"\00a0"}html body pre>code{padding:0;margin:0;font-size:.85em !important;word-break:normal;white-space:pre;background:transparent;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;font-size:.85em !important;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:before,html body pre tt:before,html body pre code:after,html body pre tt:after{content:normal}html body p,html body blockquote,html body ul,html body ol,html body dl,html body pre{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body pre,html body code{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview .pagebreak,.markdown-preview .newpage{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center !important}.markdown-preview:not([for="preview"]) .code-chunk .btn-group{display:none}.markdown-preview:not([for="preview"]) .code-chunk .status{display:none}.markdown-preview:not([for="preview"]) .code-chunk .output-div{margin-bottom:16px}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0}@media screen and (min-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px + 2em)}}@media screen and (max-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{font-size:14px !important;padding:1em}}@media print{html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,0.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{padding:0 1.6em;margin-top:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc li{margin-bottom:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{list-style-type:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% -  300px);padding:2em calc(50% - 457px -  150px);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+
+      </style>
+    </head>
+    <body for="html-export">
+      <div class="mume markdown-preview  ">
+      <p><img src="https://img.shields.io/badge/LoonVer.-2.1.5-blue.svg" alt>   <img src="https://img.shields.io/badge/Coding-JavaScript-green.svg" alt> <img src="https://img.shields.io/badge/Author-Pwnint32-orange.svg" alt> <img src="https://img.shields.io/badge/FirstModify-2020%2F11%2F18-red.svg" alt></p>
+<h1 class="mume-header" id="loon%E8%84%9A%E6%9C%ACapi%E6%89%8B%E5%86%8C">Loon&#x811A;&#x672C;API&#x624B;&#x518C;</h1>
+
+<p>&#x9605;&#x8BFB;&#x6B64;&#x6587;&#x6863;&#x9700;&#x8981;&#x4E86;&#x89E3;&#x57FA;&#x7840;&#x7684;JavaScript&#x8BED;&#x6CD5;&#x548C;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;</p>
+<p>&#x5982;&#x679C;&#x60A8;&#x6709;&#x5174;&#x8DA3;&#x5B66;&#x4E60;JavaScript&#x7684;&#x6559;&#x7A0B;&#x53EF;&#x4EE5;&#x79FB;&#x6B65;&#x81F3;&#xFF1A;<a href="https://www.runoob.com/js/js-tutorial.html">&#x83DC;&#x9E1F;&#x6559;&#x7A0B;-JavaScript&#x6559;&#x7A0B;</a></p>
+<p>&#x5982;&#x679C;&#x60A8;&#x6709;&#x5174;&#x8DA3;&#x5B66;&#x4E60;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;&#x7684;&#x5185;&#x5BB9;&#x53EF;&#x4EE5;&#x79FB;&#x6B65;&#x81F3;:<a href="https://deerchao.cn/tutorials/regex/regex.htm">30&#x5206;&#x949F;&#x5165;&#x95E8;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;</a></p>
+<p>&#x672C;&#x4EBA;&#x975E;Loon&#x4F5C;&#x8005;&#xFF0C;&#x5728;&#x5B98;&#x65B9;&#x6587;&#x6863;&#x6CA1;&#x6709;&#x51FA;&#x6765;&#x4E4B;&#x524D;&#xFF0C;&#x672C;API&#x624B;&#x518C;&#x53EF;&#x4F5C;&#x4E3A;&#x811A;&#x672C;&#x7F16;&#x5199;&#x7684;API&#x53C2;&#x8003;&#x3002;</p>
+<p>&#x622A;&#x6B62;&#x81F3;&#x7F16;&#x5199;&#x672C;&#x7BC7;&#x6559;&#x7A0B;&#x65F6;,Loon&#x7248;&#x672C;&#x53F7;&#x4E3A;:2.1.5(226),TF&#x7248;&#x672C;</p>
+<div class="code-chunk" data-id="code-chunk-id-0" data-cmd="toc"><div class="input-div"><div class="btn-group"><div class="run-btn btn"><span>&#x25B6;&#xFE0E;</span></div><div class="run-all-btn btn">all</div></div><div class="status">running...</div></div><div class="output-div"></div></div><hr>
+<h2 class="mume-header" id="%E4%B8%80-loon%E8%84%9A%E6%9C%AC%E7%B1%BB%E5%9E%8B">&#x4E00;&#x3001;Loon&#x811A;&#x672C;&#x7C7B;&#x578B;</h2>
+
+<pre class="language-text">Loon&#x652F;&#x6301;&#x4E09;&#x79CD;&#x811A;&#x672C;&#x7C7B;&#x578B;:http-request,http-response,cron
+
+http-request&#x7C7B;&#x578B;:&#x83B7;&#x53D6;&#x5230;&#x8868;&#x8FBE;&#x5F0F;&#x5339;&#x914D;&#x7684;URL&#x5730;&#x5740;&#x53D1;&#x751F;&#x8BF7;&#x6C42;&#x4E8B;&#x4EF6;&#x65F6;&#x89E6;&#x53D1;&#x7684;&#x811A;&#x672C;
+http-response&#x7C7B;&#x578B;:&#x83B7;&#x53D6;&#x5230;&#x8868;&#x8FBE;&#x5F0F;&#x5339;&#x914D;&#x7684;URL&#x5730;&#x5740;&#x5B8C;&#x6210;&#x8BF7;&#x6C42;,&#x53D6;&#x5F97;&#x54CD;&#x5E94;&#x6D88;&#x606F;&#x4F53;&#x65F6;&#x89E6;&#x53D1;&#x7684;&#x811A;&#x672C;
+cron&#x7C7B;&#x578B;:&#x5B9A;&#x65F6;&#x4EFB;&#x52A1;&#x811A;&#x672C;,&#x5728;Loon&#x4E2D;&#x6709;&#x8868;&#x8FBE;&#x5F0F;&#x7684;&#x8BE6;&#x7EC6;&#x6CE8;&#x89E3;,cron&#x53EF;&#x81EA;&#x884C;&#x767E;&#x5EA6;&#x8FDB;&#x884C;&#x5B66;&#x4E60;
+</pre>
+<h2 class="mume-header" id="%E4%BA%8C-loon%E6%8E%A8%E9%80%81%E9%80%9A%E7%9F%A5">&#x4E8C;&#x3001;Loon&#x63A8;&#x9001;&#x901A;&#x77E5;</h2>
+
+<pre class="language-text">Loon&#x652F;&#x6301;&#x901A;&#x8FC7;&#x811A;&#x672C;&#x5411;&#x7528;&#x6237;&#x63A8;&#x9001;&#x901A;&#x77E5;&#x4FE1;&#x606F;
+</pre>
+<pre data-role="codeBlock" data-info="php" class="language-php"><span class="token constant">API</span>&#x540D;&#x79F0;<span class="token punctuation">:</span><span class="token variable">$notification</span>
+<span class="token constant">API</span>&#x65B9;&#x6CD5;<span class="token punctuation">:</span>post
+<span class="token constant">API</span>&#x65B9;&#x6CD5;&#x53C2;&#x6570;<span class="token punctuation">:</span>Title<span class="token punctuation">,</span>SubTitle<span class="token punctuation">,</span>Content
+
+Title<span class="token punctuation">:</span>&#x901A;&#x77E5;&#x6807;&#x9898;
+SubTitle<span class="token punctuation">:</span>&#x5B50;&#x6807;&#x9898;
+Content<span class="token punctuation">:</span>&#x5185;&#x5BB9;
+
+Tips<span class="token punctuation">:</span>SubTitle&#x548C;Content&#x5FC5;&#x987B;&#x4F20;&#x5165;&#x7684;<span class="token punctuation">,</span>&#x53EF;&#x4EE5;&#x4F20;&#x5165;&#x7A7A;&#x5B57;&#x7B26;&#x4E32;<span class="token punctuation">,</span>&#x5219;&#x53EA;&#x4F1A;&#x663E;&#x793A;&#x901A;&#x77E5;&#x6807;&#x9898;<span class="token punctuation">;</span>SubTitle&#x663E;&#x793A;&#x7684;&#x5185;&#x5BB9;&#x957F;&#x5EA6;&#x6709;&#x9650;<span class="token punctuation">,</span>&#x5982;&#x679C;&#x5185;&#x5BB9;&#x8FC7;&#x957F;<span class="token punctuation">,</span>&#x5EFA;&#x8BAE;&#x5199;&#x5165;Content&#x3002;
+</pre><pre data-role="codeBlock" data-info="javascript" class="language-javascript"><span class="token constant">API</span>&#x4EE3;&#x7801;&#x793A;&#x4F8B;&#xFF1A;
+<span class="token keyword">function</span> <span class="token function">Notify_Demo</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">var</span> Title<span class="token punctuation">,</span>SubTitle<span class="token punctuation">,</span>Content<span class="token punctuation">;</span>
+    TItle <span class="token operator">=</span> <span class="token string">&quot;&#x6211;&#x662F;&#x4E3B;&#x6807;&#x9898;&quot;</span><span class="token punctuation">;</span>
+    SubTitle  <span class="token operator">=</span> <span class="token string">&quot;&#x6211;&#x662F;&#x5B50;&#x6807;&#x9898;&quot;</span><span class="token punctuation">;</span>
+    Content <span class="token operator">=</span> <span class="token string">&quot;&#x6211;&#x662F;&#x8981;&#x63A8;&#x9001;&#x7684;&#x5185;&#x5BB9;&quot;</span><span class="token punctuation">;</span>
+    $noification<span class="token punctuation">.</span><span class="token function">post</span><span class="token punctuation">(</span>Title<span class="token punctuation">,</span>SubTitle<span class="token punctuation">,</span>Content<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token comment">//Call Function</span>
+<span class="token function">Notify_Demo</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+</pre><h2 class="mume-header" id="%E4%B8%89-loon%E5%8F%91%E9%80%81http%E8%AF%B7%E6%B1%82">&#x4E09;&#x3001;Loon&#x53D1;&#x9001;Http&#x8BF7;&#x6C42;</h2>
+
+<pre class="language-text">Loon&#x652F;&#x6301;&#x53D1;&#x9001;Http&#x8BF7;&#x6C42;,&#x8BB8;&#x591A;&#x7B7E;&#x5230;&#x811A;&#x672C;&#x7684;&#x5B9E;&#x73B0;&#x4E5F;&#x662F;&#x57FA;&#x4E8E;&#x6B64;API&#x3002;
+</pre>
+<pre data-role="codeBlock" data-info="php" class="language-php"><span class="token constant">API</span>&#x540D;&#x79F0;&#xFF1A;<span class="token variable">$httpClient</span>
+<span class="token constant">API</span>&#x65B9;&#x6CD5;<span class="token punctuation">:</span>get<span class="token punctuation">,</span>post
+&#x672C;<span class="token constant">API</span>&#x5206;&#x4E3A;&#x4E24;&#x4E2A;&#x65B9;&#x6CD5;<span class="token punctuation">,</span>get&#x65B9;&#x6CD5;&#x548C;post&#x65B9;&#x6CD5;<span class="token punctuation">,</span>&#x5176;&#x4E2D;get&#x8BF7;&#x6C42;&#x652F;&#x6301;&#x4E24;&#x79CD;&#x53C2;&#x6570;&#x683C;&#x5F0F;&#xFF1A;
+
+<span class="token constant">GET</span>&#x8BF7;&#x6C42;&#x7684;<span class="token constant">API</span>&#x65B9;&#x6CD5;&#x53C2;&#x6570;<span class="token punctuation">(</span>&#x7B2C;&#x4E00;&#x79CD;<span class="token punctuation">)</span>&#xFF1A;Url<span class="token punctuation">,</span><span class="token function">CallBackFunction</span><span class="token punctuation">(</span>error<span class="token punctuation">,</span>response<span class="token punctuation">,</span>data<span class="token punctuation">)</span>
+<span class="token constant">GET</span>&#x8BF7;&#x6C42;&#x7684;<span class="token constant">API</span>&#x65B9;&#x6CD5;&#x53C2;&#x6570;<span class="token punctuation">(</span>&#x7B2C;&#x4E8C;&#x79CD;<span class="token punctuation">)</span>&#xFF1A;Params<span class="token punctuation">,</span><span class="token function">CallBackFunction</span><span class="token punctuation">(</span>error<span class="token punctuation">,</span>response<span class="token punctuation">,</span>data<span class="token punctuation">)</span>
+
+<span class="token constant">POST</span>&#x8BF7;&#x6C42;&#x7684;<span class="token constant">API</span>&#x65B9;&#x6CD5;&#x53C2;&#x6570;<span class="token punctuation">:</span>Params<span class="token punctuation">,</span><span class="token function">CallBackFunction</span><span class="token punctuation">(</span>error<span class="token punctuation">,</span>response<span class="token punctuation">,</span>data<span class="token punctuation">)</span>
+
+Url<span class="token punctuation">:</span>&#x8BF7;&#x6C42;&#x7684;<span class="token constant">URL</span><span class="token punctuation">,</span>&#x5B57;&#x7B26;&#x4E32;&#x7C7B;&#x578B;
+<span class="token function">CallBackFunction</span><span class="token punctuation">(</span>error<span class="token punctuation">,</span>response<span class="token punctuation">,</span>data<span class="token punctuation">)</span>&#xFF1A;&#x56DE;&#x8C03;&#x51FD;&#x6570;<span class="token punctuation">,</span>&#x7528;&#x4E8E;&#x83B7;&#x53D6;&#x8BF7;&#x6C42;&#x56DE;&#x6765;&#x7684;&#x6D88;&#x606F;&#x4F53;<span class="token punctuation">,</span>&#x4F20;&#x5165;&#x4E09;&#x4E2A;&#x53C2;&#x6570;<span class="token punctuation">:</span>error<span class="token punctuation">,</span>response<span class="token punctuation">,</span>data<span class="token punctuation">;</span>response<span class="token punctuation">:</span>&#x6D88;&#x606F;&#x5934;<span class="token punctuation">,</span>&#x5BF9;&#x8C61;&#x7C7B;&#x578B;<span class="token punctuation">;</span>data&#xFF1A;&#x6D88;&#x606F;&#x4F53;<span class="token punctuation">,</span>&#x5B57;&#x7B26;&#x4E32;&#x7C7B;&#x578B;<span class="token punctuation">;</span>error&#x4E00;&#x822C;&#x8868;&#x793A;&#x9519;&#x8BEF;&#x4FE1;&#x606F;
+Params<span class="token punctuation">:</span>&#x8BF7;&#x6C42;&#x5BF9;&#x8C61;<span class="token punctuation">,</span>&#x5BF9;&#x8C61;&#x7C7B;&#x578B;<span class="token punctuation">,</span>&#x5176;&#x4E2D;&#x5305;&#x62EC;&#x4E09;&#x4E2A;&#x5185;&#x5BB9;&#xFF1A;url<span class="token punctuation">,</span>headers<span class="token punctuation">,</span>body<span class="token punctuation">;</span>&#x5206;&#x522B;&#x8868;&#x793A;&#x8BF7;&#x6C42;&#x7684;<span class="token constant">URL</span><span class="token punctuation">,</span>&#x8BF7;&#x6C42;&#x5934;&#x4FE1;&#x606F;<span class="token punctuation">,</span>&#x9700;&#x8981;&#x643A;&#x5E26;&#x7684;&#x6D88;&#x606F;&#x4F53;<span class="token punctuation">;</span>headers<span class="token punctuation">:</span>&#x5BF9;&#x8C61;&#x7C7B;&#x578B;<span class="token punctuation">,</span>&#x5199;&#x5165;&#x8BF7;&#x6C42;&#x6240;&#x9700;&#x8981;&#x7684;&#x5404;&#x79CD;&#x5934;&#x90E8;&#x4FE1;&#x606F;&#x3002;
+</pre><p><strong>GET&#x8BF7;&#x6C42;&#x7684;&#x4E24;&#x79CD;&#x65B9;&#x5F0F;:</strong></p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript"><span class="token comment">//$httpClient.get(url,callbackfunction(error,response,data));</span>
+<span class="token keyword">function</span> <span class="token function">Get_One</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment">//&#x7B2C;&#x4E00;&#x79CD;&#x65B9;&#x5F0F;</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">var</span> ExampleUrl <span class="token operator">=</span> <span class="token string">&quot;https://example.com&quot;</span><span class="token punctuation">;</span>
+    $httpClient<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span>ExampleUrl<span class="token punctuation">,</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">error<span class="token punctuation">,</span>response<span class="token punctuation">,</span>data</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">var</span> StatusCode<span class="token punctuation">,</span>ResponseHeaders<span class="token punctuation">;</span>
+        StatusCode <span class="token operator">=</span> response<span class="token punctuation">.</span>status<span class="token punctuation">;</span>
+        ResponseHeaders <span class="token operator">=</span> response<span class="token punctuation">.</span>headers<span class="token punctuation">;</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>StatusCode<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//400</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>ResponseHeaders<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//Object</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>error<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>Json<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//if data is Json String</span>
+        <span class="token comment">//Loon&#x652F;&#x6301;&#x4F7F;&#x7528;Console.log&#x8F93;&#x51FA;&#x8C03;&#x8BD5;&#x4FE1;&#x606F;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+
+
+<span class="token comment">//$httpClient.get(params,callbackfunction(error,response,data))</span>
+<span class="token keyword">function</span> <span class="token function">Get_Two</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment">//&#x7B2C;&#x4E8C;&#x79CD;&#x65B9;&#x5F0F;</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">var</span> GetExampleParams
+    <span class="token punctuation">{</span>
+        url<span class="token punctuation">:</span><span class="token string">&quot;https://www.baidu.com&quot;</span><span class="token punctuation">,</span>
+        headers<span class="token punctuation">:</span>
+        <span class="token punctuation">{</span>
+            <span class="token string">&quot;User-Agent&quot;</span><span class="token punctuation">:</span><span class="token string">&quot;Example.Agent&quot;</span><span class="token punctuation">,</span>
+             Cookies<span class="token punctuation">:</span><span class="token string">&quot;ExampleCookie&quot;</span><span class="token punctuation">,</span>
+             <span class="token comment">//...</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        body<span class="token punctuation">:</span><span class="token string">&quot;ExampleBodyMessage&quot;</span>
+    <span class="token punctuation">}</span>
+    $httpClient<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span>GetExampleParams<span class="token punctuation">,</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">error<span class="token punctuation">,</span>response<span class="token punctuation">,</span>data</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">var</span> StatusCode<span class="token punctuation">,</span>ResponseHeaders<span class="token punctuation">;</span>
+        StatusCode <span class="token operator">=</span> response<span class="token punctuation">.</span>status<span class="token punctuation">;</span>
+        ResponseHeaders <span class="token operator">=</span> response<span class="token punctuation">.</span>headers<span class="token punctuation">;</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>StatusCode<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//400</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>ResponseHeaders<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//Object</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>error<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>Json<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//if data is Json String</span>
+        <span class="token comment">//Loon&#x652F;&#x6301;&#x4F7F;&#x7528;Console.log&#x8F93;&#x51FA;&#x8C03;&#x8BD5;&#x4FE1;&#x606F;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</pre><p><strong>POST&#x8BF7;&#x6C42;</strong></p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript"><span class="token comment">//$httpClient.post(params,callbackfunction(error,response,data))</span>
+<span class="token keyword">function</span> <span class="token function">Post_Data</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">var</span> GetExampleParams
+    <span class="token punctuation">{</span>
+        url<span class="token punctuation">:</span><span class="token string">&quot;https://www.baidu.com&quot;</span><span class="token punctuation">,</span>
+        headers<span class="token punctuation">:</span>
+        <span class="token punctuation">{</span>
+            <span class="token string">&quot;User-Agent&quot;</span><span class="token punctuation">:</span><span class="token string">&quot;Example.Agent&quot;</span><span class="token punctuation">,</span>
+             Cookies<span class="token punctuation">:</span><span class="token string">&quot;ExampleCookie&quot;</span><span class="token punctuation">,</span>
+             <span class="token comment">//...</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        body<span class="token punctuation">:</span><span class="token string">&quot;ExampleBodyMessage&quot;</span>
+    <span class="token punctuation">}</span>
+    $httpClient<span class="token punctuation">.</span><span class="token function">post</span><span class="token punctuation">(</span>GetExampleParams<span class="token punctuation">,</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">error<span class="token punctuation">,</span>response<span class="token punctuation">,</span>data</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">var</span> StatusCode<span class="token punctuation">,</span>ResponseHeaders<span class="token punctuation">;</span>
+        StatusCode <span class="token operator">=</span> response<span class="token punctuation">.</span>status<span class="token punctuation">;</span>
+        ResponseHeaders <span class="token operator">=</span> response<span class="token punctuation">.</span>headers<span class="token punctuation">;</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>StatusCode<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//400</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>ResponseHeaders<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//Object</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>error<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>Json<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//if data is Json String</span>
+        <span class="token comment">//Loon&#x652F;&#x6301;&#x4F7F;&#x7528;Console.log&#x8F93;&#x51FA;&#x8C03;&#x8BD5;&#x4FE1;&#x606F;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+</pre><h2 class="mume-header" id="%E4%B8%89-http-request%E7%B1%BB%E5%9E%8B">&#x4E09;&#x3001;Http-request&#x7C7B;&#x578B;</h2>
+
+<pre class="language-text">Loon&#x4E2D;&#x7684;http-request&#x7C7B;&#x578B;&#x7684;&#x811A;&#x672C;,&#x9664;&#x4E86;&#x652F;&#x6301;&#x516C;&#x5171;API&#x5916;,&#x8FD8;&#x6709;&#x81EA;&#x6709;&#x7684;&#x53D8;&#x91CF;,&#x4E0D;&#x8FC7;&#x8BE5;&#x53D8;&#x91CF;&#x53EA;&#x6709;&#x5728;&#x5176;&#x88AB;&#x89E6;&#x53D1;&#x65F6;&#x624D;&#x6709;&#x6548;&#x3002;
+</pre>
+<pre data-role="codeBlock" data-info="php" class="language-php"><span class="token constant">API</span>&#x540D;&#x79F0;<span class="token punctuation">:</span><span class="token variable">$request</span>
+<span class="token constant">API</span>&#x5C5E;&#x6027;<span class="token punctuation">:</span>url<span class="token punctuation">,</span>headers<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>&#x7B49;&#x7B49;
+&#x672C;<span class="token constant">API</span>&#x53EA;&#x6709;&#x5728;&#x5339;&#x914D;&#x4E86;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;&#x5339;&#x914D;&#x7684;<span class="token constant">URL</span>&#x94FE;&#x63A5;&#x624D;&#x4F1A;&#x88AB;&#x89E6;&#x53D1;<span class="token punctuation">,</span>&#x76F4;&#x63A5;&#x8FD0;&#x884C;&#x4F1A;&#x62A5;&#x9519;&#x3002;
+tips<span class="token punctuation">:</span>&#x975E;cron&#x7C7B;&#x578B;&#x811A;&#x672C;<span class="token punctuation">,</span>&#x90FD;&#x9700;&#x8981;&#x5728;<span class="token constant">MITM</span>&#x4E2D;&#x6DFB;&#x52A0;&#x8981;&#x89E3;&#x5BC6;&#x7684;&#x57DF;&#x540D;<span class="token punctuation">,</span>&#x5426;&#x5219;&#x4E0D;&#x4F1A;&#x751F;&#x6548;<span class="token punctuation">;</span>&#x60A8;&#x9700;&#x8981;&#x6DFB;&#x52A0;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;
+&#x4F7F;&#x7528;<span class="token variable">$request</span><span class="token punctuation">.</span>url&#x53EF;&#x4EE5;&#x83B7;&#x53D6;&#x5230;&#x8BF7;&#x6C42;&#x94FE;&#x63A5;&#x7B49;&#x4FE1;&#x606F;<span class="token punctuation">,</span>&#x5982;&#x679C;&#x60A8;&#x4E0D;&#x77E5;&#x9053;<span class="token variable">$request</span>&#x4E2D;&#x5305;&#x542B;&#x54EA;&#x4E9B;&#x4FE1;&#x606F;
+&#x53EF;&#x4EE5;&#x4F7F;&#x7528;console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token variable">$request</span><span class="token punctuation">)</span>&#x8F93;&#x51FA;&#x5176;&#x5B8C;&#x6574;&#x7684;&#x4FE1;&#x606F;
+</pre><pre data-role="codeBlock" data-info="javascript" class="language-javascript"><span class="token comment">//&#x83B7;&#x53D6;&#x8BF7;&#x6C42;URL&#x548C;&#x8BF7;&#x6C42;&#x5934;&#x4FE1;&#x606F;</span>
+<span class="token keyword">function</span> <span class="token function">Get_RequestInfo</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">var</span> RequestURL<span class="token punctuation">,</span>RequestHeaders<span class="token punctuation">;</span>
+    RequestURL <span class="token operator">=</span> $request<span class="token punctuation">.</span>url<span class="token punctuation">;</span>
+    RequestHeaders <span class="token operator">=</span> $request<span class="token punctuation">.</span>headers<span class="token punctuation">;</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>RequestURL<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>RequestHeaders<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token comment">//&#x4FEE;&#x6539;&#x8BF7;&#x6C42;&#x5934;&#x4FE1;&#x606F;</span>
+<span class="token keyword">function</span> <span class="token function">Change_Request</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">var</span> RequestHeaders <span class="token operator">=</span> $request<span class="token punctuation">.</span>headers<span class="token punctuation">;</span>
+    RequestHeaders<span class="token punctuation">[</span><span class="token string">&quot;Cookie&quot;</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">&quot;ChangeExampleCookie&quot;</span><span class="token punctuation">;</span>
+    <span class="token function">$done</span><span class="token punctuation">(</span><span class="token punctuation">{</span>RequestHeaders<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//&#x4FEE;&#x6539;&#x5B8C;&#x6210;&#x4E4B;&#x540E;&#x9700;&#x8981;&#x8C03;&#x7528;$done</span>
+<span class="token punctuation">}</span>
+</pre><h2 class="mume-header" id="%E5%9B%9B-http-response%E7%B1%BB%E5%9E%8B">&#x56DB;&#x3001;Http-response&#x7C7B;&#x578B;</h2>
+
+<pre class="language-text">Loon&#x4E2D;&#x7684;http-response&#x7C7B;&#x578B;&#x7684;&#x811A;&#x672C;,&#x9664;&#x4E86;&#x652F;&#x6301;&#x516C;&#x5171;API&#x5916;,&#x8FD8;&#x6709;&#x81EA;&#x6709;&#x7684;&#x53D8;&#x91CF;,&#x4E0D;&#x8FC7;&#x8BE5;&#x53D8;&#x91CF;&#x53EA;&#x6709;&#x5728;&#x5176;&#x88AB;&#x89E6;&#x53D1;&#x65F6;&#x624D;&#x6709;&#x6548;&#x3002;
+</pre>
+<pre data-role="codeBlock" data-info="php" class="language-php"><span class="token constant">API</span>&#x540D;&#x79F0;<span class="token punctuation">:</span><span class="token variable">$response</span>
+<span class="token constant">API</span>&#x5C5E;&#x6027;<span class="token punctuation">:</span>headers<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>&#x7B49;&#x7B49;
+&#x672C;<span class="token constant">API</span>&#x53EA;&#x6709;&#x5728;&#x5339;&#x914D;&#x4E86;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;&#x5339;&#x914D;&#x7684;<span class="token constant">URL</span>&#x94FE;&#x63A5;&#x624D;&#x4F1A;&#x88AB;&#x89E6;&#x53D1;<span class="token punctuation">,</span>&#x76F4;&#x63A5;&#x8FD0;&#x884C;&#x4F1A;&#x62A5;&#x9519;&#x3002;
+tips<span class="token punctuation">:</span>&#x975E;cron&#x7C7B;&#x578B;&#x811A;&#x672C;<span class="token punctuation">,</span>&#x90FD;&#x9700;&#x8981;&#x5728;<span class="token constant">MITM</span>&#x4E2D;&#x6DFB;&#x52A0;&#x8981;&#x89E3;&#x5BC6;&#x7684;&#x57DF;&#x540D;<span class="token punctuation">,</span>&#x5426;&#x5219;&#x4E0D;&#x4F1A;&#x751F;&#x6548;<span class="token punctuation">;</span>&#x60A8;&#x9700;&#x8981;&#x6DFB;&#x52A0;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;
+&#x4F7F;&#x7528;<span class="token variable">$request</span><span class="token punctuation">.</span>url&#x53EF;&#x4EE5;&#x83B7;&#x53D6;&#x5230;&#x8BF7;&#x6C42;&#x94FE;&#x63A5;&#x7B49;&#x4FE1;&#x606F;<span class="token punctuation">,</span>&#x5982;&#x679C;&#x60A8;&#x4E0D;&#x77E5;&#x9053;<span class="token variable">$response</span>&#x4E2D;&#x5305;&#x542B;&#x54EA;&#x4E9B;&#x4FE1;&#x606F;
+&#x53EF;&#x4EE5;&#x4F7F;&#x7528;console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token variable">$response</span><span class="token punctuation">)</span>&#x8F93;&#x51FA;&#x5176;&#x5B8C;&#x6574;&#x7684;&#x4FE1;&#x606F;
+&#x6CE8;&#x610F;&#xFF1A;&#x5982;&#x679C;&#x8981;&#x4FEE;&#x6539;&#x6D88;&#x606F;&#x4F53;&#x7684;&#x5185;&#x5BB9;<span class="token punctuation">,</span>&#x9700;&#x8981;&#x6253;&#x5F00;Body&#x5F00;&#x5173;
+</pre><pre data-role="codeBlock" data-info="javascript" class="language-javascript"><span class="token comment">//&#x83B7;&#x53D6;&#x54CD;&#x5E94;&#x4FE1;&#x606F;</span>
+<span class="token keyword">function</span> <span class="token function">Get_ResponseInfo</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">var</span> ResponseHeaders<span class="token punctuation">;</span>
+    RequestHeaders <span class="token operator">=</span> $response<span class="token punctuation">.</span>headers<span class="token punctuation">;</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>RequestHeaders<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token comment">//&#x4FEE;&#x6539;&#x6D88;&#x606F;&#x4F53;</span>
+<span class="token keyword">function</span> <span class="token function">Change_ResponseBody</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">var</span> RespnseBodyData <span class="token operator">=</span> $response<span class="token punctuation">.</span>body
+    RespnseBodyData <span class="token operator">=</span> Json<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>RespnseBodyData<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    RespnseBodyData<span class="token punctuation">[</span><span class="token string">&quot;ExampleTree&quot;</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">&quot;ExampleChangeTree&quot;</span><span class="token punctuation">;</span>
+    <span class="token function">$done</span><span class="token punctuation">(</span><span class="token punctuation">{</span>RespnseBodyData<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//&#x4FEE;&#x6539;&#x5B8C;&#x6210;&#x4E4B;&#x540E;&#x9700;&#x8981;&#x8C03;&#x7528;$done</span>
+<span class="token punctuation">}</span>
+</pre><h2 class="mume-header" id="%E4%BA%94-loon%E4%B8%AD%E6%8C%81%E7%BB%AD%E5%8C%96%E5%AD%98%E5%82%A8">&#x4E94;&#x3001;Loon&#x4E2D;&#x6301;&#x7EED;&#x5316;&#x5B58;&#x50A8;</h2>
+
+<pre class="language-text">&#x6211;&#x4E5F;&#x4E0D;&#x77E5;&#x9053;API&#x7684;&#x610F;&#x601D;&#x662F;&#x4E0D;&#x662F;&#x8FD9;&#x4E2A;,&#x59D1;&#x4E14;&#x8FD9;&#x4E48;&#x53EB;&#x5427;&#x3002;
+&#x5728;Loon&#x4E2D;,&#x63D0;&#x4F9B;&#x4E86;&#x4E00;&#x4E2A;&#x80FD;&#x5728;&#x5168;&#x5C40;&#x5B58;&#x50A8;&#x6570;&#x636E;&#x7684;API,&#x4E5F;&#x5C31;&#x662F;&#x4E00;&#x4E2A;&#x811A;&#x672C;&#x5728;&#x8FD0;&#x884C;&#x7684;&#x65F6;&#x5019;,&#x53EF;&#x4EE5;&#x8BFB;&#x53D6;&#x5176;&#x4ED6;&#x591A;&#x4E2A;&#x811A;&#x672C;&#x8FD0;&#x884C;&#x4E2D;&#x5B58;&#x5165;&#x516C;&#x5171;&#x533A;&#x57DF;&#x7684;&#x6570;&#x636E;&#x3002;
+&#x672C;&#x51FD;&#x6570;&#x5728;Loon&#x7684;&#x8FDB;&#x7A0B;&#x88AB;&#x6740;&#x6B7B;&#x4E4B;&#x524D;&#xFF0C;&#x5B58;&#x50A8;&#x7684;&#x6570;&#x636E;&#x4E00;&#x76F4;&#x4F1A;&#x88AB;&#x4FDD;&#x7559;&#x3002;
+</pre>
+<pre data-role="codeBlock" data-info="php" class="language-php"><span class="token constant">API</span>&#x540D;&#x79F0;<span class="token punctuation">:</span><span class="token variable">$peristentStroe</span>
+&#x65B9;&#x6CD5;<span class="token punctuation">:</span>write<span class="token punctuation">,</span>read<span class="token punctuation">,</span>remove
+write<span class="token punctuation">:</span>&#x7528;&#x4E8E;&#x5199;&#x5165;&#x6570;&#x636E;&#x5230;&#x516C;&#x5171;&#x5B58;&#x50A8;&#x533A;
+read<span class="token punctuation">:</span>&#x7528;&#x4E8E;&#x8BFB;&#x53D6;&#x5728;&#x516C;&#x5171;&#x5B58;&#x50A8;&#x533A;&#x5DF2;&#x6709;&#x7684;&#x6570;&#x636E;
+remove<span class="token punctuation">:</span>&#x79FB;&#x9664;&#x516C;&#x5171;&#x5B58;&#x50A8;&#x533A;&#x5B58;&#x50A8;&#x7684;&#x6570;&#x636E;
+</pre><pre data-role="codeBlock" data-info="javascript" class="language-javascript"><span class="token constant">API</span>&#x4EE3;&#x7801;&#x793A;&#x4F8B;&#xFF1A;
+<span class="token keyword">function</span> <span class="token function">Write_PeristentStore</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment">//&#x5199;&#x5165;&#x5B58;&#x50A8;&#x533A;</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">var</span> WriteString <span class="token operator">=</span> <span class="token string">&quot;WriteExample&quot;</span><span class="token punctuation">;</span>
+    $peristentStore<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span>WriteString<span class="token punctuation">,</span><span class="token string">&quot;ExampleKey&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//&#x53C2;&#x6570;&#x5206;&#x522B;&#x4EE3;&#x8868;:&#x5199;&#x5165;&#x7684;&#x6570;&#x636E;,&#x6570;&#x636E;&#x5B58;&#x50A8;&#x7684;Key&#x540D;&#x79F0;&#xFF0C;&#x7528;&#x4E8E;&#x53D6;&#x51FA;&#x6570;&#x636E;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">function</span> <span class="token function">Read_PeristentStore</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment">//&#x8BFB;&#x53D6;&#x5199;&#x5165;&#x7684;&#x6570;&#x636E;</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">var</span> ReadKey <span class="token operator">=</span> <span class="token string">&quot;ExampleKey&quot;</span><span class="token punctuation">;</span><span class="token comment">//&#x4E0A;&#x4E00;&#x4E2A;API&#x5199;&#x5165;&#x6570;&#x636E;&#x7684;KEY&#x540D;&#x79F0;</span>
+    <span class="token keyword">var</span> ReadResult <span class="token operator">=</span> $peristentStore<span class="token punctuation">.</span><span class="token function">read</span><span class="token punctuation">(</span>ReadKey<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>ReadResult<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//&#x8F93;&#x51FA;&#x6570;&#x636E;</span>
+<span class="token punctuation">}</span>
+<span class="token comment">//Remove&#x65B9;&#x6CD5;&#x6211;&#x5C31;&#x4E0D;&#x5199;&#x4F8B;&#x5B50;&#x4E86;,&#x548C;read&#x76F8;&#x540C;</span>
+</pre><pre class="language-text">&#x672C;API&#x591A;&#x88AB;&#x7528;&#x4E8E;&#x9700;&#x8981;&#x83B7;&#x53D6;Cookie&#x7684;&#x811A;&#x672C;&#x8FDB;&#x884C;Cookie&#x83B7;&#x53D6;&#x5199;&#x5165;&#x6301;&#x7EED;&#x5B58;&#x50A8;&#x533A;,&#x518D;&#x4F9B;&#x7B7E;&#x5230;&#x811A;&#x672C;&#x8BFB;&#x53D6;Cookie&#x6765;&#x8FD0;&#x884C;&#x3002;
+</pre>
+<h2 class="mume-header" id="%E5%85%AD-%E7%BB%93%E6%9D%9F">&#x516D;&#x3001;&#x7ED3;&#x675F;</h2>
+
+<pre class="language-text">&#x5176;&#x5B9E;&#x6587;&#x6863;&#x8FD8;&#x6CA1;&#x6709;&#x7ED3;&#x675F;,&#x76EE;&#x524D;&#x5B98;&#x65B9;&#x6B63;&#x5F0F;&#x7684;&#x6587;&#x6863;&#x8FD8;&#x6CA1;&#x6709;&#x51FA;&#x6765;,&#x5E0C;&#x671B;&#x6211;&#x7684;&#x6587;&#x6863;&#x80FD;&#x591F;&#x5E2E;&#x52A9;&#x5230;&#x5927;&#x5BB6;&#x3002;
+
+Tips:Loon&#x4E2D;&#x6240;&#x6709;&#x7684;&#x5185;&#x5EFA;&#x51FD;&#x6570;,&#x5982;$httpClient&#x7B49;,&#x90FD;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;console.log($functionName)&#x6765;&#x67E5;&#x770B;&#x5B83;&#x7684;&#x65B9;&#x6CD5;&#x548C;&#x5C5E;&#x6027;&#x3002;
+
+&#x4E00;&#x4E2A;&#x5C0F;&#x8D34;&#x58EB;:$loon&#x4E5F;&#x662F;&#x5C5E;&#x4E8E;&#x4E00;&#x4E2A;&#x5185;&#x5EFA;&#x51FD;&#x6570;,&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x672C;&#x51FD;&#x6570;&#x8F93;&#x51FA;loon&#x7248;&#x672C;,&#x4E5F;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x8FD9;&#x4E2A;&#x6765;&#x5224;&#x65AD;&#x811A;&#x672C;&#x662F;&#x5426;&#x518D;loon&#x4E2D;&#x8FD0;&#x884C;&#x3002;
+
+loon&#x7684;config&#x90E8;&#x5206;&#x6211;&#x5C31;&#x4E0D;&#x8BB2;&#x4E86;&#xFF0C;&#x6CA1;&#x6709;&#x6DF1;&#x5165;&#x4E86;&#x89E3;&#x8FC7;&#xFF0C;&#x53EA;&#x4E86;&#x89E3;&#x4E86;&#x4EE5;&#x4E0A;&#x63D0;&#x5230;&#x7684;&#x5185;&#x5BB9;&#x3002;
 
 END.
-                                                                                     PwnInt32</code></pre>
+                                                                                     PwnInt32
+</pre>
+
+      </div>
+      
+      
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    </body></html>
